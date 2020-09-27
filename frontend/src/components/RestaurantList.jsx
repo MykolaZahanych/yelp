@@ -2,6 +2,7 @@ import React, { useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import RestaurantFinder from '../api/RestaurantFinder';
 import { RestaurantsContext } from '../context/RestaurantsContext';
+import StarRating from './StarRating';
 
 const RestaurantList = () => {
   const { restaurants, setRestaurants } = useContext(RestaurantsContext);
@@ -42,6 +43,18 @@ const RestaurantList = () => {
     history.push(`/restaurants/${id}`);
   };
 
+  const renderRating = (restaurant) => {
+    if (!restaurant.count) {
+      return <span className='text-warning'>0 reviews</span>;
+    }
+    return (
+      <>
+        <StarRating rating={restaurant.average_rating} />
+        <span className='text-warnign ml-1'>({restaurant.count})</span>
+      </>
+    );
+  };
+
   return (
     <div className='list-group'>
       <table className='table table-hover table-dark'>
@@ -63,7 +76,7 @@ const RestaurantList = () => {
                   <td>{restaurant.name}</td>
                   <td>{restaurant.location}</td>
                   <td>{'$'.repeat(restaurant.price_range)}</td>
-                  <td>reviews</td>
+                  <td>{renderRating(restaurant)}</td>
                   <td>
                     <button onClick={(e) => handleUpdate(e, restaurant.id)} className='btn btn-warning'>
                       Update
